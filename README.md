@@ -3,8 +3,8 @@
 Luxe Hotels is a fully-featured hotel management web application built with **Spring Boot** (backend) and **React.js** (frontend). It offers luxury-themed booking with real-time availability filtering, elegant payment and confirmation pages, PDF invoice generation, email notifications, and a clean UI.
 
 > ✅ **Deployed on Render** with full **Docker-based CI/CD** integration  
-> 📦 The backend is containerized, configured with `.env`, and the frontend is running as a static React app, deployed separately on    
-      Render with production logs.
+> 📦 The backend is containerized, configured with `.env`, and the frontend is built and started with bpm as a web service on another instance and deployed separately on    
+"Render.com".
 
 ---
 
