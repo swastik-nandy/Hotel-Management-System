@@ -1,4 +1,3 @@
-import Navbar from '../components/Navbar';
 import HeroSection from '../components/HeroSection';
 import OverviewSection from '../components/OverviewSection';
 import RoomsPreviewSection from '../components/RoomsPreviewSection';
@@ -14,7 +13,6 @@ export default function Home() {
         flexDirection: 'column',
       }}
     >
-      <Navbar />
       <HeroSection />
       <OverviewSection />
       <RoomsPreviewSection />
