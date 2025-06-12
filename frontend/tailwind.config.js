@@ -1,3 +1,5 @@
+import plugin from 'tailwindcss/plugin';
+
 export default {
   content: [
     "./index.html",
@@ -8,7 +10,7 @@ export default {
       fontFamily: {
         stylish: ["Playfair Display", "serif"],
         cormorant: ['"Cormorant Garamond"', 'serif'],
-        cinzel: ["Cinzel", "serif"], // ✅ Stylish font for typewriter text
+        cinzel: ["Cinzel", "serif"],
       },
       colors: {
         leafGreen: '#3BAA5F',
@@ -55,5 +57,19 @@ export default {
       },
     },
   },
-  plugins: [],
-}
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        '.no-scrollbar': {
+          /* Firefox */
+          'scrollbar-width': 'none',
+          /* Internet Explorer 10+ */
+          '-ms-overflow-style': 'none',
+        },
+        '.no-scrollbar::-webkit-scrollbar': {
+          display: 'none', // Chrome, Safari
+        },
+      });
+    }),
+  ],
+};
