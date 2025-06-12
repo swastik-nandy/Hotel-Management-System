@@ -6,9 +6,12 @@ export default function OverviewSection() {
       id="overview"
       className="bg-white text-black px-6 md:px-12 py-16"
     >
-      {/* Heading in default clean sans-serif */}
+      {/* Heading in Cinzel */}
       <div className="text-center mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-widest">
+        <h2
+          className="text-3xl md:text-4xl uppercase tracking-widest mb-4"
+          style={{ fontFamily: "'Cinzel', serif", fontWeight: "bold" }}
+        >
           The Luxe Experience
         </h2>
 
@@ -27,21 +30,21 @@ export default function OverviewSection() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="overflow-hidden rounded-xl shadow-md">
           <img
-            src="/public/images/overview-lobby.jpg"
+            src="/images/overview-lobby.jpg"
             alt="Taj Lobby"
             className="w-full h-64 object-cover hover:scale-105 transition-transform duration-500"
           />
         </div>
         <div className="overflow-hidden rounded-xl shadow-md">
           <img
-            src="public/images/overview-room.webp"
+            src="/images/overview-room.webp"
             alt="Luxury Room"
             className="w-full h-64 object-cover hover:scale-105 transition-transform duration-500"
           />
         </div>
         <div className="overflow-hidden rounded-xl shadow-md">
           <img
-            src="public/images/overview-dining.webp"
+            src="/images/overview-dining.webp"
             alt="Taj Dining"
             className="w-full h-64 object-cover hover:scale-105 transition-transform duration-500"
           />
