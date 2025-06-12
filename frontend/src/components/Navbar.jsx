@@ -21,7 +21,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-y-2">
         {/* Brand */}
         <div
-          className="text-3xl font-semibold tracking-widest pt-1 leading-[1.1]"
+          className="text-3xl font-semibold tracking-widest pt-2 leading-[1.4]"
           style={{ fontFamily: "Allura, cursive" }}
         >
           Luxe Hotels
@@ -30,7 +30,7 @@ export default function Navbar() {
         {/* Tabs + Button */}
         <div className="w-full sm:w-auto flex items-center gap-x-4 px-2">
           {/* Horizontal Scrollable Tabs */}
-          <div className="max-w-[80vw] sm:max-w-none overflow-x-auto whitespace-nowrap scrollbar-hide">
+          <div className="max-w-[80vw] sm:max-w-none overflow-x-auto whitespace-nowrap no-scrollbar">
             <ul className="flex gap-x-6 uppercase font-semibold text-[15px]">
               {[
                 { name: "Home", path: "/" },
