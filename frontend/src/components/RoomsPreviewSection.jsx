@@ -32,21 +32,26 @@ const cards = [
 export default function RoomsPreviewSection() {
   const navigate = useNavigate();
 
-  const handleClick = (roomType, branchId, branchName) => {
-    navigate(
-      `/info?branch=${encodeURIComponent(branchName)}&branchId=${branchId}&type=${roomType}`
-    );
+  const handleClick = () => {
+    navigate("/filter");
   };
 
   return (
-    <section id="explore" className="bg-[#f7f7f7] text-black px-6 md:px-12 py-20">
+    <section
+      id="explore"
+      className="px-6 md:px-12 py-20"
+      style={{
+        background: "linear-gradient(to bottom, #ffffff, #dfcbb2)", // white to soft brown
+      }}
+    >
       {/* Heading */}
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="text-3xl md:text-4xl font-bold text-center uppercase tracking-wide mb-12"
+        className="text-3xl md:text-4xl text-center tracking-wide mb-12"
+        style={{ fontFamily: "'Cinzel', serif", fontWeight: "bold" }}
       >
         Explore Our Rooms
       </motion.h2>
@@ -62,10 +67,8 @@ export default function RoomsPreviewSection() {
             viewport={{ once: true }}
           >
             <div
-              onClick={() =>
-                handleClick(card.roomType, card.defaultBranchId, card.defaultBranchName)
-              }
-              className="cursor-pointer block bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl hover:scale-[1.015] transition-transform duration-300"
+              onClick={handleClick}
+              className="cursor-pointer block bg-[#3a2e2a] text-white rounded-xl overflow-hidden shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-transform duration-300"
             >
               <img
                 src={card.image}
@@ -73,9 +76,16 @@ export default function RoomsPreviewSection() {
                 className="w-full h-60 object-cover"
               />
               <div className="p-5">
-                <h3 className="text-xl font-semibold mb-1">{card.title}</h3>
-                <p className="text-sm text-gray-600 mb-2">{card.roomType}</p>
-                <p className="text-lg font-bold text-yellow-600">{card.price}</p>
+                <h3
+                  className="text-2xl mb-1"
+                  style={{ fontFamily: "'Allura', cursive" }}
+                >
+                  {card.title}
+                </h3>
+                <p className="text-xs tracking-wide text-gray-300 mb-2">{card.roomType}</p>
+                <p className="text-md font-semibold text-yellow-400">
+                  Starting at {card.price}
+                </p>
               </div>
             </div>
           </motion.div>
