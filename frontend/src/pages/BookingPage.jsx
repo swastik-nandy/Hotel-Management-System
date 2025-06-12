@@ -95,7 +95,7 @@ export default function BookingPage() {
   }
 
   return (
-    <section className="min-h-screen w-full bg-gray-100 px-4 py-14 md:px-12 text-black">
+    <section className="min-h-screen w-full bg-gradient-to-br from-white to-[#dfcbb2] px-4 py-14 md:px-12 text-black">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
