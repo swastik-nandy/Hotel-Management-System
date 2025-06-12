@@ -16,7 +16,7 @@ public class CorsConfig {
                 registry.addMapping("/api/**")
                         .allowedOrigins(
                             "http://localhost:5173",                          // Local dev
-                            "https://your-frontend.onrender.com"             // Production frontend URL
+                            "https://hotel-management-system-f78n.onrender.com/"             // Production frontend URL
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
