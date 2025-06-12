@@ -111,9 +111,9 @@ export default function FilterPage() {
           Find Your Perfect Room
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative overflow-visible">
           {/* Branch */}
-          <div className="relative z-10">
+          <div className="relative z-30">
             <Listbox value={selectedBranch} onChange={setSelectedBranch}>
               <div className="relative">
                 <Listbox.Label className="block mb-1 font-medium text-[#5a4234]">Branch</Listbox.Label>
@@ -131,7 +131,7 @@ export default function FilterPage() {
                   leaveFrom="opacity-100 translate-y-0"
                   leaveTo="opacity-0 -translate-y-2"
                 >
-                  <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white border border-[#9f897c] shadow-lg">
+                  <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white border border-[#9f897c] shadow-lg z-30">
                     {branches.map((branch) => (
                       <Listbox.Option
                         key={branch.id}
@@ -152,7 +152,7 @@ export default function FilterPage() {
           </div>
 
           {/* Room Type */}
-          <div className="relative z-10">
+          <div className="relative z-20">
             <Listbox value={selectedType} onChange={setSelectedType}>
               <div className="relative">
                 <Listbox.Label className="block mb-1 font-medium text-[#5a4234]">Room Type</Listbox.Label>
@@ -170,7 +170,7 @@ export default function FilterPage() {
                   leaveFrom="opacity-100 translate-y-0"
                   leaveTo="opacity-0 -translate-y-2"
                 >
-                  <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white border border-[#9f897c] shadow-lg">
+                  <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white border border-[#9f897c] shadow-lg z-20">
                     {roomTypes.map((type) => (
                       <Listbox.Option
                         key={type}
