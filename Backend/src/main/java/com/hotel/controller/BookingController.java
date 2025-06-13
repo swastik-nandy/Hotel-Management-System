@@ -181,6 +181,13 @@ public class BookingController {
         return ResponseEntity.ok(branchRepository.save(branch));
     }
 
+    // ✅ Health check endpoint for uptime monitoring (e.g., UptimeRobot)
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("pong");
+    }
+
+    // Inner DTO class
     public static class BookingRequest {
         private String customerName;
         private String phoneNumber;
