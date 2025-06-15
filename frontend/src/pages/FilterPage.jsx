@@ -46,6 +46,15 @@ export default function FilterPage() {
       }
     };
 
+    // Detect refresh and reset filters
+    const isRefresh = performance.navigation.type === 1;
+    if (isRefresh) {
+      setCheckIn("");
+      setCheckOut("");
+      setSelectedBranch(null);
+      setSelectedType("");
+    }
+
     fetchInitialData();
   }, []);
 
