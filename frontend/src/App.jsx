@@ -13,7 +13,7 @@ import Dining from "./pages/Dining";
 import Gallery from "./pages/Gallery";
 import Offers from "./pages/Offers";
 import Navbar from "./components/Navbar";
-import NotFound from "./pages/NotFound"; // Optional: app-level 404
+import NotFound from "./pages/NotFound"; // ✅ Custom 404 page
 
 function AppWrapper() {
   const location = useLocation();
@@ -21,14 +21,12 @@ function AppWrapper() {
   const showNavbarPaths = ["/", "/about", "/dining", "/gallery", "/offers"];
   const showNavbar = showNavbarPaths.includes(location.pathname);
 
-  // Only block refresh for these routes
   const blockedRoutes = ["/payment"];
   const isBookingPage = location.pathname.startsWith("/book/");
   const isRefresh = performance.navigation.type === 1;
 
   if (isRefresh && (blockedRoutes.includes(location.pathname) || isBookingPage)) {
-    window.location.href = "/__404_trigger__"; // ✅ True browser 404
-    return null;
+    return <NotFound />; // ✅ Render React-based 404 page
   }
 
   return (
@@ -47,7 +45,8 @@ function AppWrapper() {
         <Route path="/dining" element={<Dining />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/offers" element={<Offers />} />
-
+        
+        {/* Default catch-all 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
