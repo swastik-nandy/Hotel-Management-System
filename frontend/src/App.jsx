@@ -1,5 +1,4 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -13,24 +12,13 @@ import Dining from "./pages/Dining";
 import Gallery from "./pages/Gallery";
 import Offers from "./pages/Offers";
 import Navbar from "./components/Navbar";
-import NotFound from "./pages/NotFound"; // ✅ Custom 404 page
+import NotFound from "./pages/NotFound";
 
 function AppWrapper() {
   const location = useLocation();
 
   const showNavbarPaths = ["/", "/about", "/dining", "/gallery", "/offers"];
   const showNavbar = showNavbarPaths.includes(location.pathname);
-
-  const blockedRoutes = ["/payment"];
-  const isBookingPage = location.pathname.startsWith("/book/");
-
-  // ✅ Use modern reliable refresh detection
-  const navEntries = window.performance.getEntriesByType("navigation");
-  const isRefresh = navEntries.length > 0 && navEntries[0].type === "reload";
-
-  if (isRefresh && (blockedRoutes.includes(location.pathname) || isBookingPage)) {
-    return <NotFound />; // ✅ Show your custom 404
-  }
 
   return (
     <>
@@ -48,8 +36,6 @@ function AppWrapper() {
         <Route path="/dining" element={<Dining />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/offers" element={<Offers />} />
-        
-        {/* Default catch-all 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
