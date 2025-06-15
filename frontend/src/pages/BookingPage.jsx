@@ -29,6 +29,18 @@ export default function BookingPage() {
   const unavailableBranch = searchParams.get("branch");
   const unavailableType = searchParams.get("type");
 
+  // ✅ Detect page refresh
+  const navEntries = window.performance.getEntriesByType("navigation");
+  const isRefresh = navEntries.length > 0 && navEntries[0].type === "reload";
+
+  if (isRefresh) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-white text-black text-xl font-semibold">
+        404 - This page is not accessible on refresh.
+      </div>
+    );
+  }
+
   const getImageForType = (type) => {
     const lower = type?.toLowerCase();
     if (lower?.includes("luxury")) return "/images/room-suite.jpg";
@@ -133,7 +145,16 @@ export default function BookingPage() {
           {!isUnavailable && (
             <div className="flex justify-between items-center bg-yellow-100 border border-yellow-300 rounded-xl p-4">
               <p className="text-yellow-600 font-semibold text-lg">
-                ₹{(price / Math.max(1, Math.ceil((new Date(checkOutDate) - new Date(checkInDate)) / (1000 * 60 * 60 * 24)))).toLocaleString("en-IN")} / night
+                ₹
+                {(price /
+                  Math.max(
+                    1,
+                    Math.ceil(
+                      (new Date(checkOutDate) - new Date(checkInDate)) /
+                        (1000 * 60 * 60 * 24)
+                    )
+                  )).toLocaleString("en-IN")}{" "}
+                / night
               </p>
               <p className="text-yellow-600 font-medium text-lg">
                 Total Price : ₹{price.toLocaleString("en-IN")}
@@ -150,7 +171,9 @@ export default function BookingPage() {
                     type="text"
                     placeholder="First Name"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value.replace(/\s/g, ""))}
+                    onChange={(e) =>
+                      setFirstName(e.target.value.replace(/\s/g, ""))
+                    }
                     className="pl-10 w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   />
                 </div>
@@ -167,7 +190,9 @@ export default function BookingPage() {
                     type="text"
                     placeholder="Last Name"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value.replace(/\s/g, ""))}
+                    onChange={(e) =>
+                      setLastName(e.target.value.replace(/\s/g, ""))
+                    }
                     className="pl-10 w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   />
                 </div>
