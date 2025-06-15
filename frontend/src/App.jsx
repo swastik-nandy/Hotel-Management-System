@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 import Home from "./pages/Home";
@@ -13,7 +13,7 @@ import Dining from "./pages/Dining";
 import Gallery from "./pages/Gallery";
 import Offers from "./pages/Offers";
 import Navbar from "./components/Navbar";
-import NotFound from "./pages/NotFound"; //  Handles fake 404s
+import NotFound from "./pages/NotFound"; // Optional: app-level 404
 
 function AppWrapper() {
   const location = useLocation();
@@ -21,13 +21,14 @@ function AppWrapper() {
   const showNavbarPaths = ["/", "/about", "/dining", "/gallery", "/offers"];
   const showNavbar = showNavbarPaths.includes(location.pathname);
 
-  // ⛔ Routes that should 404 on refresh
-  const blockedRoutes = ["/payment", "/confirmation"];
+  // Only block refresh for these routes
+  const blockedRoutes = ["/payment"];
   const isBookingPage = location.pathname.startsWith("/book/");
   const isRefresh = performance.navigation.type === 1;
 
   if (isRefresh && (blockedRoutes.includes(location.pathname) || isBookingPage)) {
-    return <Navigate to="/__fake_not_found__" replace />;
+    window.location.href = "/__404_trigger__"; // ✅ True browser 404
+    return null;
   }
 
   return (
@@ -47,15 +48,12 @@ function AppWrapper() {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/offers" element={<Offers />} />
 
-        {/* 404 fallback routes */}
-        <Route path="/__fake_not_found__" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
 }
 
-// Router is already in main.jsx
 export default function App() {
   return <AppWrapper />;
 }
