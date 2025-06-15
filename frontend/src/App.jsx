@@ -23,10 +23,13 @@ function AppWrapper() {
 
   const blockedRoutes = ["/payment"];
   const isBookingPage = location.pathname.startsWith("/book/");
-  const isRefresh = performance.navigation.type === 1;
+
+  // ✅ Use modern reliable refresh detection
+  const navEntries = window.performance.getEntriesByType("navigation");
+  const isRefresh = navEntries.length > 0 && navEntries[0].type === "reload";
 
   if (isRefresh && (blockedRoutes.includes(location.pathname) || isBookingPage)) {
-    return <NotFound />; // ✅ Render React-based 404 page
+    return <NotFound />; // ✅ Show your custom 404
   }
 
   return (
