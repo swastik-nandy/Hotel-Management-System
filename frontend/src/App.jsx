@@ -18,7 +18,18 @@ import Navbar from "./components/Navbar";
 function AppWrapper() {
   const location = useLocation();
 
-  // Paths where Navbar should be shown
+  // Detect refresh
+  const isRefresh = performance.navigation.type === 1;
+
+  // Block refresh-based access to these pages
+  const blockedRoutes = ["/payment", "/confirmation"];
+  const isBookingPage = location.pathname.startsWith("/book/");
+
+  if (isRefresh && (blockedRoutes.includes(location.pathname) || isBookingPage)) {
+    return null; // Let browser throw 404
+  }
+
+  // Show Navbar only on these paths
   const showNavbarPaths = ["/", "/about", "/dining", "/gallery", "/offers"];
   const showNavbar = showNavbarPaths.includes(location.pathname);
 
