@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/*  Global fix: remove unwanted horizontal scroll */
+html,
+body,
+#root {
+  @apply overflow-x-hidden bg-[#0a0a0c] text-white;
+  margin: 0;
+  padding: 0;
+}
+
+/* ✅ Custom utility classes */
 @layer utilities {
   .clip-path-custom {
     clip-path: polygon(60% 0, 100% 0, 100% 100%, 40% 100%);
@@ -14,5 +24,25 @@
 
   .no-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome, Safari */
+  }
+
+  /* 🌊 Bubble floating animation */
+  @keyframes bubbleFloat {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 0.4;
+    }
+    50% {
+      transform: translateY(-20px) scale(1.1);
+      opacity: 0.2;
+    }
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 0.4;
+    }
+  }
+
+  .animate-bubble {
+    animation: bubbleFloat 8s ease-in-out infinite;
   }
 }
