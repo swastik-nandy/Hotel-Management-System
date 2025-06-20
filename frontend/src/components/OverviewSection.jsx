@@ -38,21 +38,21 @@ export default function OverviewSection() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="overflow-hidden rounded-xl shadow-md">
           <img
-            src="/public/images/overview-lobby.jpg"
+            src="/images/overview-lobby.jpg"
             alt="Taj Lobby"
             className="w-full h-64 object-cover hover:scale-105 transition-transform duration-500"
           />
         </div>
         <div className="overflow-hidden rounded-xl shadow-md">
           <img
-            src="public/images/overview-room.webp"
+            src="/images/overview-room.webp"
             alt="Luxury Room"
             className="w-full h-64 object-cover hover:scale-105 transition-transform duration-500"
           />
         </div>
         <div className="overflow-hidden rounded-xl shadow-md">
           <img
-            src="public/images/overview-dining.webp"
+            src="/images/overview-dining.webp"
             alt="Taj Dining"
             className="w-full h-64 object-cover hover:scale-105 transition-transform duration-500"
           />
