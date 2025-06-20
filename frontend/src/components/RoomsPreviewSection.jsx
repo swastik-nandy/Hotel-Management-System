@@ -141,16 +141,7 @@ export default function RoomsPreviewSection() {
         ))}
       </div>
 
-      {/* CTA Button */}
-      <div className="text-center mt-20" data-aos="fade-up">
-        <button
-          onClick={handleClick}
-          className="px-8 py-3 border-2 border-[#3a2e2a] text-[#3a2e2a] rounded-full uppercase tracking-widest hover:bg-[#3a2e2a] hover:text-white transition duration-300"
-          style={{ fontWeight: "600" }}
-        >
-          View All Rooms
-        </button>
-      </div>
+      
     </section>
   );
 }
