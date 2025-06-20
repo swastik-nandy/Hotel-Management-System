@@ -11,7 +11,7 @@ body,
   padding: 0;
 }
 
-/* ✅ Custom utility classes */
+/* Custom utility classes */
 @layer utilities {
   .clip-path-custom {
     clip-path: polygon(60% 0, 100% 0, 100% 100%, 40% 100%);
