@@ -2,12 +2,35 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../api/axiosInstance";
-import { CheckCircle } from "lucide-react";
+import {
+  CheckCircle,
+  ReceiptText,
+  ShieldCheck,
+  Clock,
+  PhoneCall,
+  Sparkles,
+  Loader,
+  Stars,
+  Wand2,
+  BadgeCheck,
+  Landmark,
+  UserCheck,
+  Wallet,
+  CalendarCheck,
+  BookOpen,
+  ShieldHalf,
+  CircleDollarSign,
+  Hotel,
+  AirVent,
+  Lightbulb,
+  BedDouble,
+  FlameKindling,
+  Users2
+} from "lucide-react";
 
 export default function ConfirmationPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
-
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -66,8 +89,8 @@ export default function ConfirmationPage() {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-black text-white text-xl overflow-hidden">
-        Loading confirmation...
+      <div className="flex justify-center items-center min-h-screen bg-black text-white text-xl overflow-hidden gap-4 animate-pulse">
+        <Loader className="animate-spin" /> Loading confirmation...
       </div>
     );
 
@@ -79,77 +102,135 @@ export default function ConfirmationPage() {
     );
 
   return (
-    <div className="w-full min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-900 via-gray-850 to-gray-950 text-white flex flex-col">
-      <main className="flex-grow flex items-center justify-center p-6 sm:p-10 overflow-hidden relative">
-        {/* Background gradient orbs */}
-        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-gray-600 opacity-10 blur-[180px] rounded-full z-0"></div>
-        <div className="absolute bottom-[-120px] right-[-120px] w-[500px] h-[500px] bg-gray-700 opacity-10 blur-[160px] rounded-full z-0"></div>
+    <div className="w-screen overflow-x-hidden">
+      <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-[#0a0a0c] via-[#111117] to-[#1a1a20] text-white font-sans relative overflow-x-hidden">
+        {/* Floating Effects */}
+        <div className="absolute top-[-200px] left-[-100px] w-[700px] h-[700px] bg-emerald-500 opacity-10 blur-[180px] rounded-full" />
+        
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="relative z-10 w-full max-w-5xl bg-gradient-to-br from-gray-800 via-gray-850 to-gray-900 border border-gray-700 rounded-3xl shadow-xl p-6 sm:p-10"
-        >
-          {/* Header */}
-          <div className="flex flex-col items-center text-center mb-10">
-            <div className="bg-green-500 text-black px-6 py-2 rounded-full shadow-md inline-flex items-center gap-2 font-semibold tracking-tight">
+        {/* Main Content */}
+        <main className="flex-grow flex flex-col justify-center items-center pt-24 pb-16 px-6 md:px-16 relative z-10 w-full overflow-x-hidden">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center px-4"
+          >
+            <div className="inline-flex items-center gap-3 text-black font-bold px-6 py-2 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full shadow-md text-lg">
               <CheckCircle size={20} /> Booking Confirmed
             </div>
-            <p className="text-gray-400 mt-3 text-sm sm:text-base max-w-xl">
-              Your reservation has been successfully made. See details below.
+            <h1 className="text-4xl sm:text-5xl font-extrabold mt-8 tracking-tight bg-gradient-to-r from-white via-emerald-200 to-teal-100 bg-clip-text text-transparent">
+              Welcome to Your Stay, {booking?.customerName}!
+            </h1>
+            <p className="text-neutral-400 mt-4 max-w-2xl mx-auto text-base sm:text-lg text-center">
+              Your reservation is secured. We're prepping your room and polishing the pillows.
             </p>
+          </motion.div>
+
+          {/* Highlights */}
+          <div className="grid sm:grid-cols-3 gap-6 mt-12 text-sm sm:text-base text-neutral-300 max-w-5xl w-full px-4">
+            <Highlight icon={<Sparkles />} label="Room Type" value={booking?.roomType} />
+            <Highlight icon={<Clock />} label="Stay Duration" value={`${booking?.checkIn} → ${booking?.checkOut}`} />
+            <Highlight icon={<ReceiptText />} label="Booking ID" value={booking?.bookingId} />
           </div>
 
-          {/* Info Sections */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm sm:text-base text-gray-200">
-            {/* Customer Info */}
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 space-y-3">
-              <h2 className="text-lg font-bold text-white border-b border-gray-700 pb-2">Customer Info</h2>
-              <p><strong>Name:</strong> {booking?.customerName}</p>
-              <p><strong>Email:</strong> {booking?.email}</p>
-              <p><strong>Phone:</strong> {booking?.phoneNumber}</p>
-              <p><strong>Booking ID:</strong> {booking?.bookingId}</p>
-            </div>
-
-            {/* Booking Info */}
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 space-y-3">
-              <h2 className="text-lg font-bold text-white border-b border-gray-700 pb-2">Booking Details</h2>
-              <p><strong>Branch:</strong> {booking?.branchName}</p>
-              <p><strong>Room:</strong> #{booking?.roomNumber} ({booking?.roomType})</p>
-              <p><strong>Check-in:</strong> {booking?.checkIn}</p>
-              <p><strong>Check-out:</strong> {booking?.checkOut}</p>
-              <p><strong>Price:</strong> ₹{booking?.price?.toLocaleString("en-IN")}</p>
-            </div>
-          </div>
-
-          {/* Download Button */}
-          <div className="mt-10 flex justify-center">
+          {/* Download Button & Trust Info */}
+          <div className="mt-14 flex flex-col items-center gap-4 w-full overflow-x-hidden px-4">
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={downloadInvoice}
               disabled={downloading}
-              className={`px-8 py-3 rounded-full text-white font-semibold bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 transition duration-300 shadow-lg ${
+              className={`px-10 py-4 rounded-full font-bold text-white text-lg bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 transition shadow-xl ${
                 downloading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {downloading ? "Downloading..." : " Download Invoice (PDF)"}
+              {downloading ? "Downloading..." : "Download Invoice"}
             </motion.button>
-          </div>
-        </motion.div>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-black text-gray-500 text-sm py-6 px-6 sm:px-10">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
-          <p>&copy; 2025 HotelVerse. All rights reserved.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition">Terms of Service</a>
-            <a href="#" className="hover:text-white transition">Contact Us</a>
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-xs text-neutral-500 mt-6 max-w-6xl w-full overflow-hidden break-words justify-items-center sm:justify-items-start">
+              <TrustRow icon={<ShieldCheck size={14} />} text="Fully encrypted. Secured by SSL." />
+              <TrustRow icon={<PhoneCall size={14} />} text="Need Help? Concierge: +91-999-000-1234" />
+              <TrustRow icon={<Stars size={14} />} text="Earn LuxePoints with every stay." />
+              <TrustRow icon={<Wand2 size={14} />} text="Curated experience tailored for you." />
+              <TrustRow icon={<BadgeCheck size={14} />} text="Best Rate Guarantee by HotelVerse." />
+              <TrustRow icon={<Landmark size={14} />} text="200+ branches globally." />
+              <TrustRow icon={<UserCheck size={14} />} text="Verified bookings only." />
+              <TrustRow icon={<Wallet size={14} />} text="Pay later options available." />
+              <TrustRow icon={<CalendarCheck size={14} />} text="Flexible cancellation up to 24h." />
+              <TrustRow icon={<BookOpen size={14} />} text="e-Guide for local experiences." />
+              <TrustRow icon={<ShieldHalf size={14} />} text="24x7 safety monitoring." />
+              <TrustRow icon={<CircleDollarSign size={14} />} text="No hidden charges ever." />
+              <TrustRow icon={<Hotel size={14} />} text="All properties verified by team." />
+              <TrustRow icon={<AirVent size={14} />} text="Fresh air certified rooms." />
+              <TrustRow icon={<Lightbulb size={14} />} text="Energy-efficient eco lights." />
+              <TrustRow icon={<BedDouble size={14} />} text="Premium bedding with linen service." />
+              <TrustRow icon={<FlameKindling size={14} />} text="Fire-safe compliance enabled." />
+              <TrustRow icon={<Users2 size={14} />} text="Group discounts available." />
+            </div>
           </div>
-        </div>
-      </footer>
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-black text-gray-500 text-xs sm:text-sm border-t border-white/5 py-14 mt-auto w-full overflow-x-hidden">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-6 sm:px-10">
+            <div>
+              <h3 className="text-white font-semibold mb-2 text-center sm:text-left">Company</h3>
+              <ul className="space-y-1 text-center sm:text-left">
+                <li><a href="#" className="hover:text-white transition">About Us</a></li>
+                <li><a href="#" className="hover:text-white transition">Careers</a></li>
+                <li><a href="#" className="hover:text-white transition">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition">Press</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-2 text-center sm:text-left">Support</h3>
+              <ul className="space-y-1 text-center sm:text-left">
+                <li><a href="#" className="hover:text-white transition">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition">Cancellation Policy</a></li>
+                <li><a href="#" className="hover:text-white transition">FAQs</a></li>
+                <li><a href="#" className="hover:text-white transition">Accessibility</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-2 text-center sm:text-left">Legal</h3>
+              <ul className="space-y-1 text-center sm:text-left">
+                <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-white transition">Cookie Preferences</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-2 text-center sm:text-left">Connect</h3>
+              <ul className="space-y-1 text-center sm:text-left">
+                <li><a href="#" className="hover:text-white transition">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition">LinkedIn</a></li>
+                <li><a href="#" className="hover:text-white transition">Facebook</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="text-center text-gray-600 mt-10">&copy; 2025 HotelVerse. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function Highlight({ icon, label, value }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <div className="text-emerald-400 mb-2">{icon}</div>
+      <strong>{label}</strong>
+      <span>{value}</span>
+    </div>
+  );
+}
+
+function TrustRow({ icon, text }) {
+  return (
+    <div className="flex items-center gap-2 justify-center sm:justify-start whitespace-normal break-words text-center sm:text-left">
+      {icon}
+      <span>{text}</span>
     </div>
   );
 }
