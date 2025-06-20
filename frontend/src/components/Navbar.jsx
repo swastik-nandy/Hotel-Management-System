@@ -75,7 +75,7 @@ export default function Navbar() {
           </RouterLink>
 
           {/* Mobile Menu Toggle */}
-          <div className="md:hidden text-2xl text-yellow-400 ml-2" onClick={() => setMenuOpen(!menuOpen)}>
+          <div className="md:hidden text-2xl text-white ml-2" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <HiOutlineX /> : <HiOutlineMenu />}
           </div>
         </div>
