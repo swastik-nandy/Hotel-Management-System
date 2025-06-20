@@ -76,7 +76,7 @@ export default function Navbar() {
           {/* Mobile Menu Toggle */}
           <div
             className={`md:hidden text-2xl ml-2 transition-colors duration-300 ${
-              scrolled ? "text-[#3a2e2a]" : "text-white"
+              scrolled ? "text-[#5a4234]" : "text-white"
             }`}
             onClick={() => setMenuOpen(!menuOpen)}
           >
