@@ -61,7 +61,7 @@ export default function Navbar() {
             ))}
           </ul>
 
-          {/* Book Now button - always visible */}
+          {/* Book Now button */}
           <RouterLink
             to="/filter"
             className={`px-4 py-2 border-2 rounded-full text-sm font-semibold uppercase tracking-wide transition duration-300 ${
@@ -69,13 +69,17 @@ export default function Navbar() {
                 ? "text-[#5a4234] border-[#5a4234] hover:bg-[#5a4234] hover:text-white"
                 : "text-white border-white hover:bg-white hover:text-black"
             }`}
-            
           >
             Book Now
           </RouterLink>
 
           {/* Mobile Menu Toggle */}
-          <div className="md:hidden text-2xl text-white ml-2" onClick={() => setMenuOpen(!menuOpen)}>
+          <div
+            className={`md:hidden text-2xl ml-2 transition-colors duration-300 ${
+              scrolled ? "text-[#3a2e2a]" : "text-white"
+            }`}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
             {menuOpen ? <HiOutlineX /> : <HiOutlineMenu />}
           </div>
         </div>
