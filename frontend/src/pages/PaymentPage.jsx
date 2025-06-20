@@ -1,53 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaGooglePay, FaCreditCard, FaUniversity } from "react-icons/fa";
-import { SiUpwork, SiPaytm } from "react-icons/si";
 import api from "../api/axiosInstance";
+import {
+  FaCcVisa, FaCcMastercard, FaGooglePay, FaUniversity,
+  FaCcAmex, FaCcDiscover, FaShieldAlt, FaInfoCircle, FaLock, FaHeadset, FaGift, FaBolt
+} from "react-icons/fa";
+import {
+  SiPhonepe, SiPaytm, SiRazorpay,
+} from "react-icons/si";
 
 export default function PaymentPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
-
+  const [selectedMethod, setSelectedMethod] = useState("CARD");
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
-  const [selectedMethod, setSelectedMethod] = useState("UPI");
-
-  const paymentMethods = [
-    { name: "UPI", icon: <SiUpwork size={28} /> },
-    { name: "Google Pay", icon: <FaGooglePay size={28} /> },
-    { name: "Credit Card", icon: <FaCreditCard size={28} /> },
-    { name: "Net Banking", icon: <FaUniversity size={26} /> },
-    { name: "Paytm", icon: <SiPaytm size={28} /> },
-  ];
-
-  const getNightCount = () => {
-    try {
-      const checkIn = new Date(state.checkIn);
-      const checkOut = new Date(state.checkOut);
-      const diffTime = checkOut - checkIn;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return diffDays;
-    } catch {
-      return 1;
-    }
-  };
-
-  const getPricePerNight = () => {
-    const nights = getNightCount();
-    return nights > 0 ? Math.round(state.price / nights) : state.price;
-  };
+  const [promo, setPromo] = useState("");
+  const [discount, setDiscount] = useState(0);
 
   useEffect(() => {
-    if (!state || !state.customerName || !state.phoneNumber || !state.email) {
-      setError("Missing booking or user information. Redirecting...");
+    if (!state || !state.customerName) {
       setTimeout(() => navigate("/"), 2000);
     }
   }, [state, navigate]);
 
   const handlePayment = async () => {
     setProcessing(true);
-    setError("");
-
     try {
       const payload = {
         customerName: state.customerName,
@@ -56,115 +34,213 @@ export default function PaymentPage() {
         checkIn: state.checkIn,
         checkOut: state.checkOut,
         bookingTime: new Date().toLocaleTimeString("en-GB", { hour12: false }),
-      };
-
-      const finalPayload = {
-        ...payload,
         branchId: state.branchId,
-        roomType: state.roomType.charAt(0).toUpperCase() + state.roomType.slice(1),
+        roomType: state.roomType,
       };
-
-      const res = await api.post("/api/booking/add", finalPayload);
-
+      const res = await api.post("/api/booking/add", payload);
       const bookingId = res.data?.bookingId;
-      if (!bookingId) throw new Error("Booking ID missing in response.");
-
+      if (!bookingId) throw new Error("Booking failed.");
       sessionStorage.setItem("latestBookingId", bookingId);
       navigate("/confirmation", { state: { bookingId } });
     } catch (err) {
-      console.error("Booking failed:", err.response?.data || err.message);
-      setError("Payment failed or booking could not be completed.");
+      setError("Something went wrong. Please try again.");
       setProcessing(false);
+    }
+  };
+
+  const total = state.price + 250 + Math.floor(state.price * 0.18) - discount;
+
+  const applyPromo = () => {
+    if (promo.toLowerCase() === "luxestay") {
+      setDiscount(500);
+    } else {
+      setDiscount(0);
     }
   };
 
   if (!state) return null;
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-gray-850 to-gray-950 text-white">
-      <main className="flex-grow flex items-center justify-center px-4 py-12 relative overflow-hidden">
-        {/* Background gradient blur balls */}
-        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-gray-600 opacity-10 blur-[180px] rounded-full z-0" />
-        <div className="absolute bottom-[-120px] right-[-120px] w-[500px] h-[500px] bg-gray-700 opacity-10 blur-[160px] rounded-full z-0" />
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0c] via-[#131317] to-[#1c1c22] text-white font-sans">
+      <header className="px-6 md:px-16 lg:px-28 pt-12 pb-6 border-b border-white/10">
+        <div className="text-sm text-neutral-400 mb-2">Step 2 of 3</div>
+        <h1 className="text-4xl font-bold tracking-tight">Secure Your Booking</h1>
+        <p className="text-sm text-neutral-500 mt-2">
+          You're just one step away from confirming your stay. We’ll hold this room for <span className="text-yellow-400 font-medium">10 minutes</span>.
+        </p>
+      </header>
 
-        <div className="relative z-10 w-full max-w-6xl bg-gradient-to-br from-gray-800 via-gray-850 to-gray-900 border border-gray-700 rounded-2xl shadow-xl p-6 sm:p-10 md:p-12">
-          <h2 className="text-3xl font-bold text-center mb-10">Finalize Your Payment</h2>
+      <div className="w-full bg-white/5 h-1">
+        <div className="bg-emerald-400 h-1" style={{ width: "66%" }} />
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Booking Summary */}
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 space-y-4">
-              <h3 className="text-xl font-semibold border-b border-gray-600 pb-2">
-                Booking Summary
-              </h3>
-              <p><span className="font-medium text-gray-300">Name:</span> {state.customerName}</p>
-              <p><span className="font-medium text-gray-300">Email:</span> {state.email}</p>
-              <p><span className="font-medium text-gray-300">Phone:</span> {state.phoneNumber}</p>
-              <p><span className="font-medium text-gray-300">Room Type:</span> {state.roomType}</p>
-              <p><span className="font-medium text-gray-300">Branch:</span> #{state.branchId}</p>
-              <p><span className="font-medium text-gray-300">Check-in:</span> {state.checkIn}</p>
-              <p><span className="font-medium text-gray-300">Check-out:</span> {state.checkOut}</p>
+      <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 px-6 md:px-16 lg:px-28 py-12">
+        <section className="lg:col-span-1 space-y-6">
+          <h2 className="text-xl font-semibold border-b border-white/10 pb-2">Booking Overview</h2>
+          <div className="text-sm text-neutral-300 space-y-2">
+            <Detail label="Name" value={state.customerName} />
+            <Detail label="Email" value={state.email} />
+            <Detail label="Room Type" value={state.roomType} />
+            <Detail label="Branch" value={`#${state.branchId}`} />
+            <Detail label="Check-in" value={state.checkIn} />
+            <Detail label="Check-out" value={state.checkOut} />
+            <Detail label="Guests" value="2 Adults" />
+            <Detail label="Nights" value="2" />
+          </div>
 
-              <div className="mt-3 border-t border-gray-700 pt-3 space-y-1">
-                <p className="text-gray-400 text-sm">
-                  ₹{getPricePerNight().toLocaleString("en-IN")} per night × {getNightCount()} night(s)
-                </p>
-                <p className="text-gray-300 font-medium text-lg">
-                  Total Price : ₹{state.price?.toLocaleString("en-IN")}
-                </p>
-              </div>
-            </div>
-
-            {/* Payment Method */}
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 space-y-6">
-              <h3 className="text-xl font-semibold border-b border-gray-600 pb-2">
-                Select Payment Method
-              </h3>
-
-              <div className="grid grid-cols-2 gap-4">
-                {paymentMethods.map((method) => (
-                  <div
-                    key={method.name}
-                    onClick={() => setSelectedMethod(method.name)}
-                    className={`cursor-pointer flex items-center justify-center flex-col gap-2 p-4 rounded-xl border transition ${
-                      selectedMethod === method.name
-                        ? "border-emerald-400 bg-gray-700 shadow-md"
-                        : "border-gray-600 hover:border-gray-400"
-                    }`}
-                  >
-                    <div>{method.icon}</div>
-                    <span className="text-sm">{method.name}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="text-center mt-4">
-                <p className="text-gray-400 text-sm mb-1">Amount Payable</p>
-                <p className="text-2xl font-bold text-emerald-400">
-                  ₹{state.price?.toLocaleString("en-IN")}
-                </p>
-              </div>
-
-              <button
-                onClick={handlePayment}
-                disabled={processing}
-                className={`w-full mt-4 py-3 rounded-full font-semibold transition duration-300 ${
-                  processing
-                    ? "bg-emerald-700 opacity-60 cursor-not-allowed"
-                    : "bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-black shadow-md"
-                }`}
-              >
-                {processing ? "Processing..." : `Pay with ${selectedMethod}`}
-              </button>
-
-              {error && <p className="text-center text-red-400 mt-2">{error}</p>}
+          <div className="bg-[#151518] border border-white/10 rounded-xl p-4 text-sm space-y-2 mt-6">
+            <Breakdown label="Base Price" value={`₹${state.price?.toLocaleString("en-IN")}`} />
+            <Breakdown label="Service Fee" value="₹250" />
+            <Breakdown label="Taxes (18%)" value={`₹${Math.floor(state.price * 0.18)}`} />
+            {discount > 0 && <Breakdown label="Promo Discount" value={`-₹${discount}`} />}
+            <div className="flex justify-between items-center text-green-400 font-bold border-t border-white/10 pt-3">
+              <span>Total</span>
+              <span>₹{total.toLocaleString("en-IN")}</span>
             </div>
           </div>
-        </div>
-      </main>
 
-      <footer className="bg-black text-white text-center py-4 text-sm mt-auto">
-        &copy; {new Date().getFullYear()} YourHotelName. All rights reserved.
-      </footer>
+          <div className="mt-6">
+            <label className="text-sm font-medium text-white block mb-2">Apply Promo Code</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={promo}
+                onChange={(e) => setPromo(e.target.value)}
+                placeholder="Enter code"
+                className="w-full py-2 px-3 rounded-md bg-neutral-800 text-white border border-neutral-700 placeholder-white/30 text-sm"
+              />
+              <button onClick={applyPromo} className="px-4 py-2 rounded-md text-sm bg-blue-500 hover:bg-blue-600 text-white font-medium">
+                Apply
+              </button>
+            </div>
+            <p className="text-xs text-neutral-500 mt-1">Use <code>LUXESTAY</code> for ₹500 off.</p>
+          </div>
+
+          <div className="mt-6 text-sm bg-yellow-500/10 border-l-4 border-yellow-500 px-4 py-3 text-yellow-300 rounded flex gap-2 items-start">
+            <FaHeadset className="mt-1" />
+            <div>
+              <strong>Need Help?</strong><br />
+              Chat with us anytime via <a className="underline" href="#">24/7 support</a>.
+            </div>
+          </div>
+        </section>
+
+        <section className="lg:col-span-2 space-y-10">
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Payment Method</h2>
+            <div className="flex flex-wrap gap-3">
+              {['CARD', 'UPI', 'NET'].map(method => (
+                <button
+                  key={method}
+                  onClick={() => setSelectedMethod(method)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium border ${
+                    selectedMethod === method ? 'bg-white text-black' : 'bg-neutral-800 text-white/70 border-white/10 hover:bg-neutral-700'
+                  }`}
+                >
+                  {method}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {selectedMethod === "CARD" && (
+              <>
+                <Input placeholder="Cardholder Name" />
+                <Input placeholder="Card Number" />
+                <div className="flex gap-4">
+                  <Input placeholder="MM/YY" className="w-1/2" />
+                  <Input placeholder="CVV" className="w-1/2" />
+                </div>
+                <div className="flex gap-4 text-2xl text-neutral-400 pt-1">
+                  <FaCcVisa /><FaCcMastercard /><FaCcAmex /><FaCcDiscover />
+                </div>
+              </>
+            )}
+
+            {selectedMethod === "UPI" && (
+              <>
+                <Input placeholder="Enter your UPI ID" />
+                <div className="flex gap-3 text-2xl text-neutral-300 pt-1">
+                  <SiPhonepe /><FaGooglePay /><SiPaytm /><SiRazorpay />
+                </div>
+              </>
+            )}
+
+            {selectedMethod === "NET" && (
+              <>
+                <select className="w-full py-3 px-4 bg-neutral-800 border border-neutral-700 rounded-md text-white">
+                  <option>Select Bank</option>
+                  <option>SBI</option>
+                  <option>ICICI</option>
+                  <option>HDFC</option>
+                  <option>Axis Bank</option>
+                </select>
+                <FaUniversity className="text-xl text-neutral-400 mt-2" />
+              </>
+            )}
+
+            <button
+              onClick={handlePayment}
+              disabled={processing}
+              className="w-full py-3 rounded-md bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-black font-semibold shadow-lg transition"
+            >
+              {processing ? "Processing..." : `Pay ₹${total.toLocaleString("en-IN")}`}
+            </button>
+            {error && <p className="text-red-400 text-sm pt-2">{error}</p>}
+          </div>
+
+          <div className="flex flex-col gap-3 text-xs text-neutral-500 mt-8">
+            <div className="flex items-center gap-2">
+              <FaShieldAlt className="text-green-400" />
+              <span>256-bit SSL encryption ensures your data is protected</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaLock className="text-emerald-400" />
+              <span>PCI-DSS compliant payment processing</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaInfoCircle className="text-blue-400" />
+              <span>Refunds available within 24 hours if booking fails</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaBolt className="text-yellow-400" />
+              <span>Instant confirmation once payment is successful</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaGift className="text-pink-400" />
+              <span>Earn LuxePoints on every booking</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+function Input({ placeholder, className = "" }) {
+  return (
+    <input
+      placeholder={placeholder}
+      className={`w-full py-3 px-4 bg-neutral-800 border border-neutral-700 rounded-md text-white placeholder-white/40 ${className}`}
+    />
+  );
+}
+
+function Detail({ label, value }) {
+  return (
+    <div className="flex justify-between items-center">
+      <span className="text-neutral-500">{label}</span>
+      <span className="text-white">{value}</span>
+    </div>
+  );
+}
+
+function Breakdown({ label, value }) {
+  return (
+    <div className="flex justify-between items-center text-white/90">
+      <span>{label}</span>
+      <span>{value}</span>
     </div>
   );
 }
