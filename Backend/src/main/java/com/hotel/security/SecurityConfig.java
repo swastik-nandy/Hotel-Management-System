@@ -28,23 +28,22 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests(auth -> auth
-  .requestMatchers(
+.requestMatchers(
     "/",
     "/health",
-    "/api/ping",
+    "/api/stripe/**",
     "/api/auth/**",
     "/api/room/**",
     "/api/price",
     "/api/branch/**",
     "/api/availability",
-    "/api/book",
-    "/api/booking/add",
     "/api/booking-status",
     "/api/booking/*/receipt",
-    "/api/booking/**",
-    "/api/filter/**",
-    "/api/pdf/download/**"
+    "/api/payment/create",
+    "/api/booking/confirm",
+    "/api/filter/**"
 ).permitAll()
+
 
 
                 .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
