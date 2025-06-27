@@ -3,7 +3,7 @@ import { useEffect } from "react";
 const NotFound = () => {
   useEffect(() => {
     // Simulate browser-style 404 by rewriting path
-    window.history.replaceState({}, '', '/404');
+  
   }, []);
 
   return (
