@@ -3,12 +3,10 @@ package com.hotel.controller;
 import com.hotel.dto.BookingSummaryDTO;
 import com.hotel.model.Booking;
 import com.hotel.model.Branch;
-import com.hotel.model.RoomType;
 import com.hotel.repository.BranchRepository;
 import com.hotel.service.BookingService;
 import com.hotel.service.EmailService;
 import com.hotel.service.PdfService;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -22,7 +20,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,17 +30,10 @@ public class BookingController {
 
     private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
 
-    @Autowired
-    private BookingService bookingService;
-
-    @Autowired
-    private BranchRepository branchRepository;
-
-    @Autowired
-    private PdfService pdfService;
-
-    @Autowired
-    private EmailService emailService;
+    @Autowired private BookingService bookingService;
+    @Autowired private BranchRepository branchRepository;
+    @Autowired private PdfService pdfService;
+    @Autowired private EmailService emailService;
 
     @GetMapping("/availability")
     public ResponseEntity<Map<String, Object>> checkAvailability(
@@ -75,60 +65,16 @@ public class BookingController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/booking/add")
-    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingRequest request) {
-        logger.info("Creating booking for customer: {}", request.getCustomerName());
+    // ✅ Only reads booking if Stripe session already handled it
+    @GetMapping("/booking/confirm")
+    public ResponseEntity<?> confirmBooking(@RequestParam("session_id") String sessionId) {
+        logger.info("Confirming booking from Stripe session ID: {}", sessionId);
         try {
-            RoomType roomTypeEnum = RoomType.valueOf(request.getRoomType().toUpperCase());
-
-            LocalDate checkIn = LocalDate.parse(request.getCheckIn());
-            LocalDate checkOut = LocalDate.parse(request.getCheckOut());
-            LocalTime bookingTime = request.getBookingTime() != null
-                    ? LocalTime.parse(request.getBookingTime())
-                    : LocalTime.now();
-
-            Booking booking;
-
-            if (request.getRoomId() != null) {
-                booking = bookingService.createBookingFromRoomId(
-                        request.getCustomerName(),
-                        request.getPhoneNumber(),
-                        request.getEmail(),
-                        request.getRoomId(),
-                        checkIn,
-                        checkOut,
-                        bookingTime
-                );
-            } else {
-                booking = bookingService.createBooking(
-                        request.getCustomerName(),
-                        request.getPhoneNumber(),
-                        request.getEmail(),
-                        request.getBranchId(),
-                        roomTypeEnum.name(),
-                        checkIn,
-                        checkOut,
-                        bookingTime
-                );
-            }
-
-            byte[] pdf = pdfService.generateReceipt(booking);
-            emailService.sendEmail(booking.getEmail(), pdf, booking);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("bookingId", booking.getBookingId());
-            return ResponseEntity.ok(response);
-
-        } catch (IllegalArgumentException e) {
-            logger.error("Invalid room type: {}", request.getRoomType());
-            return ResponseEntity.badRequest().body("Invalid room type: " + request.getRoomType());
-        } catch (jakarta.validation.ConstraintViolationException e) {
-            logger.error("Validation errors: {}", e.getConstraintViolations());
-            return ResponseEntity.badRequest().body(e.getConstraintViolations().stream()
-                    .map(v -> v.getMessage()).toList());
+            Booking booking = bookingService.confirmBookingFromStripeSession(sessionId);
+            return ResponseEntity.ok(Map.of("bookingId", booking.getBookingId()));
         } catch (RuntimeException e) {
-            logger.error("Booking creation failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            logger.error("Booking confirmation failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().body("❌ Failed to confirm booking: " + e.getMessage());
         }
     }
 
@@ -181,13 +127,7 @@ public class BookingController {
         return ResponseEntity.ok(branchRepository.save(branch));
     }
 
-    // ✅ Health check endpoint for uptime monitoring (e.g., UptimeRobot)
-    @GetMapping("/ping")
-    public ResponseEntity<String> ping() {
-        return ResponseEntity.ok("pong");
-    }
-
-    // Inner DTO class
+    // DTO reserved for future manual booking flow
     public static class BookingRequest {
         private String customerName;
         private String phoneNumber;
@@ -204,6 +144,7 @@ public class BookingController {
         private Long roomId;
         private String bookingTime;
 
+        // Getters & Setters
         public String getCustomerName() { return customerName; }
         public void setCustomerName(String customerName) { this.customerName = customerName; }
 
