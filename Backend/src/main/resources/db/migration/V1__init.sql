@@ -1,4 +1,4 @@
--- 🚀 Core schema: Booking system (clean final - NO customer FK)
+--  Core schema: Booking system (clean final - NO customer FK)
 
 -- Branches
 CREATE TABLE IF NOT EXISTS branch (
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS employee (
 CREATE TABLE IF NOT EXISTS booking (
     id SERIAL PRIMARY KEY,
     booking_id VARCHAR(36) NOT NULL,
-    customer_id BIGINT, -- ✅ now plain reference, no FK
+    customer_id BIGINT, -- now plain reference, no FK
     customer_name VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -41,17 +41,18 @@ CREATE TABLE IF NOT EXISTS booking (
     created_at DATE NOT NULL,
     booking_time TIME NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    stripe_session_id VARCHAR(255) UNIQUE, -- ✅ New column for Stripe Webhook Deduplication
 
     CONSTRAINT fk_booking_branch FOREIGN KEY (branch_id) REFERENCES branch(id),
     CONSTRAINT fk_booking_room FOREIGN KEY (room_id) REFERENCES room(id)
 );
 
--- ✅ Initial Branches
+-- Initial Branches
 INSERT INTO branch (name, state) VALUES
 ('Kolkata', 'West Bengal'),
 ('Mumbai', 'Maharashtra');
 
--- ✅ Initial Rooms
+-- Initial Rooms
 INSERT INTO room (room_number, room_type, branch_id) VALUES
 ('101', 'LUXURY', 1),
 ('102', 'DELUXE', 1),
@@ -64,6 +65,6 @@ INSERT INTO room (room_number, room_type, branch_id) VALUES
 ('204', 'STANDARD', 2),
 ('205', 'LUXURY', 2);
 
--- ✅ Optional Admin
+-- Optional Admin
 INSERT INTO employee (username, password, role) VALUES
 ('admin', '$2a$10$8X8Z8Z8Z8Z8Z8Z8Z8Z8Z8u8Z8Z8Z8Z8Z8Z8Z8Z8Z8Z8Z8Z8Z', 'ADMIN');
