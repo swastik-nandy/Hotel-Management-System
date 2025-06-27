@@ -10,38 +10,43 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
+    //  Fetch booking by bookingId (regardless of status)
     Booking findByBookingId(String bookingId);
 
+    //  Fetch only ACTIVE bookings by bookingId
     @Query("SELECT b FROM Booking b WHERE b.status = 'ACTIVE' AND b.bookingId = :bookingId")
     Booking findActiveByBookingId(@Param("bookingId") String bookingId);
 
-    @Query("SELECT b FROM Booking b " +
-           "WHERE b.branch.id = :branchId AND b.room.roomType = :roomType " +
-           "AND ((b.checkIn <= :checkOut AND b.checkOut >= :checkIn)) " +
-           "AND b.status = 'ACTIVE'")
-    List<Booking> findOverlappingBookings(@Param("branchId") Long branchId,
-                                          @Param("roomType") RoomType roomType,
-                                          @Param("checkIn") LocalDate checkIn,
-                                          @Param("checkOut") LocalDate checkOut);
+    //  Fetch overlapping ACTIVE bookings based on branch + room type + date range
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.branch.id = :branchId AND b.room.roomType = :roomType
+        AND ((b.checkIn <= :checkOut AND b.checkOut >= :checkIn))
+        AND b.status = 'ACTIVE'
+    """)
+    List<Booking> findOverlappingBookings(
+            @Param("branchId") Long branchId,
+            @Param("roomType") RoomType roomType,
+            @Param("checkIn") LocalDate checkIn,
+            @Param("checkOut") LocalDate checkOut
+    );
 
-    @Query("SELECT COUNT(b) FROM Booking b " +
-           "WHERE b.phoneNumber = :phoneNumber AND b.customerName = :customerName " +
-           "AND b.createdAt BETWEEN :start AND :end")
-    long countBookingsInMonth(@Param("phoneNumber") String phoneNumber,
-                              @Param("customerName") String customerName,
-                              @Param("start") LocalDate start,
-                              @Param("end") LocalDate end);
-
+    //  Clean up old records
     @Query("SELECT b FROM Booking b WHERE b.createdAt < :cutoffDate")
     List<Booking> findBookingsOlderThanThirtyDays(@Param("cutoffDate") LocalDate cutoffDate);
 
-    
+    //  Check if a room is still booked past a certain date
     boolean existsByRoomAndCheckOutAfter(Room room, LocalDate date);
 
+    //  Get full booking with room and branch for PDF generation
     @Query("SELECT b FROM Booking b JOIN FETCH b.room r JOIN FETCH r.branch WHERE b.bookingId = :bookingId")
     Booking findByBookingIdWithRoomAndBranch(@Param("bookingId") String bookingId);
+
+    //  Support Stripe webhook lookups
+    Optional<Booking> findByStripeSessionId(String stripeSessionId);
 }
