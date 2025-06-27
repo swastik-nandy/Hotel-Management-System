@@ -21,7 +21,7 @@ public class Booking {
     private String bookingId;
 
     @Column(name = "customer_id")
-    private Long customerId; 
+    private Long customerId;
 
     @NotBlank
     private String customerName;
@@ -64,5 +64,9 @@ public class Booking {
     private LocalTime bookingTime;
 
     @Column(nullable = false)
-    private String status; 
+    private String status;
+
+     
+    @Column(name = "stripe_session_id", unique = true)
+    private String stripeSessionId;
 }
